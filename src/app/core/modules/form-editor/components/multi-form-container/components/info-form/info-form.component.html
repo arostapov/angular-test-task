@@ -1,0 +1,29 @@
+<div *ngIf="form" class="d-flex flex-column gap-3 w-100" [formGroup]="form">
+	<div class="d-flex justify-content-end align-items-center">
+		<ng-content select="[formHeader]" />
+	</div>
+
+	<div class="d-flex flex-column gap-1">
+		<span class="fs-6">Country</span>
+		<input class="border rounded-2"
+		       type="text"
+		       formControlName="country">
+	</div>
+
+	<div class="d-flex flex-column gap-1">
+		<span class="fs-6">Username</span>
+		<input class="border rounded-2"
+		       type="text"
+		       formControlName="username">
+	</div>
+
+	<div class="d-flex flex-column gap-1">
+		<span class="fs-6">Birthday</span>
+		<input class="form-control border"
+		       ngbDatepicker
+		       placeholder="dd.mm.yyyy"
+           #d="ngbDatepicker"
+		       [maxDate]="ngbDate"
+		       formControlName="date" (click)="d.toggle()">
+	</div>
+</div>

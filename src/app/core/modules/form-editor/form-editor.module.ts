@@ -1,9 +1,21 @@
 import { NgModule } from '@angular/core';
+import { NgForOf, NgIf } from '@angular/common';
 
 import { FormEditorRoutingModule } from './form-editor-routing.module';
+import { MultiFormContainerComponent } from './components';
+import { InfoFormComponent } from './components/multi-form-container/components';
+import { CardComponent } from '../../../shared/components';
+import { InvalidFormsPipe } from '../../../shared/pipes';
 
 @NgModule({
-  declarations: [],
-  imports: [FormEditorRoutingModule],
+  declarations: [MultiFormContainerComponent],
+  imports: [
+    FormEditorRoutingModule,
+    InfoFormComponent,
+    CardComponent,
+    NgForOf,
+    NgIf,
+    InvalidFormsPipe,
+  ],
 })
 export class FormEditorModule {}
