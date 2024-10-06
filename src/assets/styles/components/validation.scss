@@ -1,0 +1,8 @@
+.validator-error-message {
+  font-size: .75rem;
+  color: var(--bs-danger);
+
+  &.absolute {
+    position: absolute;
+  }
+}

@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  background-color: #fff;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  width: 100%;
+  max-height: 10rem;
+  overflow-y: auto;
+}
