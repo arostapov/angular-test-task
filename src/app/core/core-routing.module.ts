@@ -6,6 +6,17 @@ const routes: Routes = [
   {
     path: '',
     component: CoreWrapperComponent,
+    children: [
+      {
+        path: 'form-editor',
+        loadChildren: () =>
+          import('./modules/form-editor/form-editor.module').then((m) => m.FormEditorModule),
+      },
+      {
+        path: '**',
+        redirectTo: 'form-editor',
+      },
+    ],
   },
   {
     path: '**',
