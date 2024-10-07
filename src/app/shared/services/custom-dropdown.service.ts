@@ -22,12 +22,6 @@ export class CustomDropdownService<CT = unknown> {
     return this._overlayRef;
   }
 
-  get componentPortal(): ComponentPortal<CT> | undefined {
-    return this._portal instanceof ComponentPortal
-      ? (this._portal as ComponentPortal<CT>)
-      : undefined;
-  }
-
   get componentRef(): ComponentRef<CT> | undefined {
     return this._componentRef;
   }
@@ -69,14 +63,10 @@ export class CustomDropdownService<CT = unknown> {
       return;
     }
 
+    // it was written this way, to be able to attach another portal type to overlay if needed
     if (this._portal instanceof ComponentPortal) {
       this._componentRef = this._overlayRef.attach(this._portal);
     }
-
-    // just an example to show why it was written that way
-    // if (this._portal instanceof TemplatePortal) {
-    // this._embeddedViewRef = this._overlayRef.attach(this._portal);
-    // }
   }
 
   hideOverlay() {
@@ -85,9 +75,5 @@ export class CustomDropdownService<CT = unknown> {
     }
 
     this._overlayRef.detach();
-  }
-
-  removeOverlay() {
-    this._overlayRef?.dispose();
   }
 }

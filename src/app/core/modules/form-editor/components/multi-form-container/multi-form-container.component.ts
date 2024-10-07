@@ -20,6 +20,7 @@ import { FormEditorService } from '../../services';
   templateUrl: './multi-form-container.component.html',
   styleUrl: './multi-form-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [FormSubmissionUtilsService],
 })
 export class MultiFormContainerComponent implements OnInit, OnDestroy {
   private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);

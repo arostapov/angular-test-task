@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject, switchMap, take, timer } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FormSubmissionUtilsService {
   private _delayedEventSubject: Subject<number> = new Subject();
 
