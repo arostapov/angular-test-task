@@ -1,14 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { Observable, of } from 'rxjs';
 
 import { MATCHING_DATA, SEARCH_TERM } from '../../constants';
-import { ArrayFilterPipe } from '../../../../pipes';
 
 @Component({
   selector: 'app-matching-list-wrapper',
-  standalone: true,
-  imports: [NgForOf, ArrayFilterPipe, AsyncPipe, NgIf],
   templateUrl: './matching-list-wrapper.component.html',
   styleUrl: './matching-list-wrapper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +24,7 @@ export class MatchingListWrapperComponent {
     this.selectEvent.emit(item);
   }
 
-  trackBy(index: number, item: string) {
+  trackBy(_: number, item: string) {
     return item;
   }
 }

@@ -9,10 +9,6 @@ import {
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
-import { MatchingListWrapperComponent } from '../components';
-import { CustomDropdownService } from '../../../services';
-import { MATCHING_DATA, SEARCH_TERM } from '../constants';
-import { ShowOn } from '../../../type';
 import { NgControl } from '@angular/forms';
 import {
   BehaviorSubject,
@@ -31,9 +27,13 @@ import {
   tap,
 } from 'rxjs';
 
+import { MatchingListWrapperComponent } from '../components';
+import { CustomDropdownService } from '../../../services';
+import { MATCHING_DATA, SEARCH_TERM } from '../constants';
+import { ShowOn } from '../../../interface';
+
 @Directive({
   selector: 'input[matchingDropdown]',
-  standalone: true,
   providers: [CustomDropdownService],
 })
 export class MatchingDropdownDirective implements OnInit, OnDestroy {

@@ -1,6 +1,6 @@
 import { Directive, HostBinding, Input } from '@angular/core';
 
-import { InputSize } from '../../../type';
+import { InputSize } from '../../../interface';
 
 @Directive({
   selector: 'input[customInput]',

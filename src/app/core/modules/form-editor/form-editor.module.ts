@@ -3,8 +3,7 @@ import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 
 import { FormEditorRoutingModule } from './form-editor-routing.module';
 import { MultiFormContainerComponent } from './components';
-import { InfoFormComponent } from './components/multi-form-container/components';
-import { CardComponent } from '../../../shared/components';
+import { CardComponent, InfoFormComponent } from '../../../shared/components';
 import { InvalidFormsPipe } from '../../../shared/pipes';
 
 @NgModule({

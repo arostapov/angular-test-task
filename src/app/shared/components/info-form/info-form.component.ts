@@ -7,13 +7,11 @@ import {
   NgbDateStruct,
   NgbInputDatepicker,
 } from '@ng-bootstrap/ng-bootstrap';
-import { CustomInputModule } from '../../../../../../../shared/modules';
-import { InputDirective } from '../../../../../../../shared/modules/custom-input/directives';
-import { MatchingDropdownDirective } from '../../../../../../../shared/modules/matching-dropdown/directives';
-import { InfoForm } from '../../../../../../../shared/interface';
-import { CustomDateAdapter, CustomDateParserFormatter } from '../../../../../../../shared/helpers';
-import { ShowOn } from '../../../../../../../shared/type';
-import { InputValidatorDirective } from '../../../../../../../shared/directives';
+
+import { CustomInputModule, MatchingDropdownModule } from '../../modules';
+import { CustomDateAdapter, CustomDateParserFormatter } from '../../helpers';
+import { InputValidatorDirective } from '../../directives';
+import { InfoForm, ShowOn } from '../../interface';
 
 @Component({
   selector: 'app-info-form',
@@ -25,8 +23,7 @@ import { InputValidatorDirective } from '../../../../../../../shared/directives'
     CustomInputModule,
     NgbInputDatepicker,
     NgIf,
-    InputDirective,
-    MatchingDropdownDirective,
+    MatchingDropdownModule,
     InputValidatorDirective,
   ],
   providers: [
