@@ -7,7 +7,6 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Renderer2,
   ViewContainerRef,
 } from '@angular/core';
 import { MatchingListWrapperComponent } from '../components';
@@ -32,14 +31,17 @@ import {
   tap,
 } from 'rxjs';
 
-@Directive({ selector: 'input[matchingDropdown]', standalone: true })
+@Directive({
+  selector: 'input[matchingDropdown]',
+  standalone: true,
+  providers: [CustomDropdownService],
+})
 export class MatchingDropdownDirective implements OnInit, OnDestroy {
   private _ngControl: NgControl | null = inject(NgControl, { optional: true });
   private _viewContainerRef: ViewContainerRef = inject(ViewContainerRef);
   private _elementRef: ElementRef<HTMLInputElement> = inject(ElementRef);
   private _customDropdownService: CustomDropdownService<MatchingListWrapperComponent> =
     inject(CustomDropdownService);
-  private _renderer: Renderer2 = inject(Renderer2);
 
   private _destroy$ = new Subject<void>();
   private _inputValue$ = new BehaviorSubject<string>('');
@@ -66,11 +68,8 @@ export class MatchingDropdownDirective implements OnInit, OnDestroy {
     return this._inputValue$?.pipe(debounceTime(500), distinctUntilChanged(), shareReplay(1));
   }
 
-  @HostListener('input', ['$event'])
-  onInput(event: Event): void {
-    // event.stopPropagation();
-    // event.stopImmediatePropagation();
-
+  @HostListener('input')
+  onInput(): void {
     this._inputValue$.next(this.element.value);
   }
 

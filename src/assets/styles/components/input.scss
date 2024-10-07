@@ -15,8 +15,10 @@ input.custom-input {
     height: 2.5rem;
   }
 
-  &.ng-invalid.ng-touched {
-    border-color: red !important;
-    outline-color: red !important;
+  &.ng-invalid {
+    &.ng-dirty, &.ng-touched {
+      border-color: red !important;
+      outline-color: red !important;
+    }
   }
 }

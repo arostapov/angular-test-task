@@ -6,11 +6,11 @@ import {
   Provider,
   ViewContainerRef,
 } from '@angular/core';
-import { ComponentPortal, ComponentType, Portal, TemplatePortal } from '@angular/cdk/portal';
+import { ComponentPortal, ComponentType, Portal } from '@angular/cdk/portal';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { OverlayHelperService } from './overlay-helper.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class CustomDropdownService<CT = unknown> {
   private _overlayHelperService: OverlayHelperService = inject(OverlayHelperService);
   private _injector: Injector = inject(Injector);
@@ -73,9 +73,10 @@ export class CustomDropdownService<CT = unknown> {
       this._componentRef = this._overlayRef.attach(this._portal);
     }
 
-    if (this._portal instanceof TemplatePortal) {
-      // this._embeddedViewRef = this._overlayRef.attach(this._portal);
-    }
+    // just an example to show why it was written that way
+    // if (this._portal instanceof TemplatePortal) {
+    // this._embeddedViewRef = this._overlayRef.attach(this._portal);
+    // }
   }
 
   hideOverlay() {

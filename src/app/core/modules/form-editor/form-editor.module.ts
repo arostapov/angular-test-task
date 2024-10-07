@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 
 import { FormEditorRoutingModule } from './form-editor-routing.module';
 import { MultiFormContainerComponent } from './components';
@@ -16,6 +16,8 @@ import { InvalidFormsPipe } from '../../../shared/pipes';
     NgForOf,
     NgIf,
     InvalidFormsPipe,
+    AsyncPipe,
+    NgClass,
   ],
 })
 export class FormEditorModule {}

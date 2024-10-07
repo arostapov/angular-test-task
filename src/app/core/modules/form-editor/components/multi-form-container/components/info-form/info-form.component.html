@@ -7,6 +7,13 @@
 		<span class="fs-6">Country</span>
 		<input class="border rounded-2"
 		       type="text"
+		       customInput
+		       matchingDropdown
+		       inputValidator
+		       errorMessage="Please provide a correct Country"
+		       [showOn]="showOn"
+		       [dataset]="countries"
+		       size="large"
 		       formControlName="country">
 	</div>
 
@@ -14,6 +21,10 @@
 		<span class="fs-6">Username</span>
 		<input class="border rounded-2"
 		       type="text"
+		       customInput
+		       inputValidator
+		       size="large"
+		       errorMessage="Please provide a correct Username"
 		       formControlName="username">
 	</div>
 
@@ -22,8 +33,13 @@
 		<input class="form-control border"
 		       ngbDatepicker
 		       placeholder="dd.mm.yyyy"
+		       customInput
+		       inputValidator
+		       size="large"
+		       errorMessage="Please provide a correct Birthday"
            #d="ngbDatepicker"
 		       [maxDate]="ngbDate"
-		       formControlName="date" (click)="d.toggle()">
+		       formControlName="date"
+		       (click)="d.toggle()">
 	</div>
 </div>

@@ -1,7 +1,4 @@
-import { FormControl } from '@angular/forms';
+import { ConvertToFormModel } from './convert-to-form-model';
+import { InfoModel } from './info-model';
 
-export interface InfoForm {
-  country: FormControl<string | null>;
-  username: FormControl<string | null>;
-  date: FormControl<Date | null>;
-}
+export type InfoForm = ConvertToFormModel<InfoModel>;

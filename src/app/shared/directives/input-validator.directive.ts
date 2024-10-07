@@ -1,11 +1,28 @@
-import { Directive, ElementRef, inject, Input, OnInit, Renderer2 } from '@angular/core';
-import { NgControl, ValidationErrors } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  HostListener,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
+import { NgControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
-@Directive({ selector: '[inputValidator]', standalone: true })
-export class InputValidatorDirective implements OnInit {
-  private _ngControl: NgControl | null = inject(NgControl, { optional: true });
+@Directive({ selector: 'input[inputValidator]', standalone: true })
+export class InputValidatorDirective implements OnInit, OnDestroy {
+  private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private _ngControl: NgControl | null = inject(NgControl, {
+    optional: true,
+    self: true,
+  });
   private _renderer: Renderer2 = inject(Renderer2);
   private _elementRef: ElementRef = inject(ElementRef);
+
+  private _sub?: Subscription;
 
   private span: HTMLElement | null = null;
 
@@ -16,26 +33,54 @@ export class InputValidatorDirective implements OnInit {
     return this._elementRef.nativeElement;
   }
 
+  @HostListener('blur')
+  onBlur(): void {
+    if (this._ngControl?.status === 'PENDING' || this._ngControl?.status === 'DISABLED') {
+      return;
+    }
+
+    this._toggleErrorMessageElement(this.controlInvalid);
+  }
+
+  get controlInvalid(): boolean {
+    return (
+      (this._ngControl?.control?.invalid &&
+        (this._ngControl?.control?.touched || this._ngControl?.control?.dirty)) ||
+      false
+    );
+  }
+
   ngOnInit() {
     this._controlValueChangesHandler();
   }
 
+  ngOnDestroy() {
+    this._sub?.unsubscribe();
+  }
+
   private _controlValueChangesHandler() {
-    if (!this._ngControl?.valueChanges) {
+    if (!this._ngControl?.control?.statusChanges) {
       return;
     }
 
-    this._ngControl.valueChanges.subscribe(() =>
-      this._toggleErrorMessageElement(this._ngControl?.errors),
-    );
+    this._sub = this._ngControl.control.statusChanges.subscribe((status) => {
+      // To update input classes from ng-pending to ng-invalid/ng-valid and some other props like disabled.
+      this._cd.markForCheck();
+
+      if (status === 'PENDING' || status === 'DISABLED') {
+        return;
+      }
+
+      this._toggleErrorMessageElement(this.controlInvalid);
+    });
   }
 
-  private _toggleErrorMessageElement(errors?: ValidationErrors | null) {
-    if (!this.span && errors && Object.keys(errors).length > 0) {
+  private _toggleErrorMessageElement(isInvalid?: boolean | null) {
+    if (!this.span && isInvalid) {
       this._addElement();
     }
 
-    if (this.span && !errors) {
+    if (this.span && !isInvalid) {
       this._removeElement();
     }
   }

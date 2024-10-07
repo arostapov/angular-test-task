@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { catchError, Observable, Subscription, switchMap, take } from 'rxjs';
 
-import { InfoForm } from '../../../../../shared/interface';
-import { CountriesValidator, UsernameValidator } from '../../../../../shared/helpers';
+import { InfoForm, InfoModel } from '../../../../../shared/interface';
+import { CountriesValidator, UsernameAsyncValidator } from '../../../../../shared/helpers';
 import { Country } from '../../../../../shared/enum/country';
+import { FormSubmissionUtilsService } from '../../../../../shared/services';
 import { FormEditorService } from '../../services';
 
 @Component({
@@ -12,15 +21,41 @@ import { FormEditorService } from '../../services';
   styleUrl: './multi-form-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MultiFormContainerComponent {
+export class MultiFormContainerComponent implements OnInit, OnDestroy {
+  private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _formEditorService: FormEditorService = inject(FormEditorService);
+  private _formSubmissionUtilsService: FormSubmissionUtilsService = inject(
+    FormSubmissionUtilsService,
+  );
+  private _submitSubscription?: Subscription;
 
   maxForms: number = 10;
+  timerSec: number = 15;
+
+  isFormSubmissionStarted: boolean = false;
   countries = Object.keys(Country);
+  timer$: Observable<string> = this._formSubmissionUtilsService.getTimerWatch(this.timerSec);
   formArray: FormArray<FormGroup<InfoForm>> = new FormArray([this._getNewFormGroup()]);
+
+  get submitDisabled(): boolean {
+    return (
+      this.formArray.status === 'PENDING' ||
+      this.formArray.invalid ||
+      !this.formArrayControls.length ||
+      this.isFormSubmissionStarted
+    );
+  }
 
   get formArrayControls(): FormGroup<InfoForm>[] {
     return this.formArray.controls;
+  }
+
+  ngOnInit() {
+    this._submissionEventHandler();
+  }
+
+  ngOnDestroy() {
+    this._submitSubscription?.unsubscribe();
   }
 
   formTrackBy(index: number, _: FormGroup<InfoForm>) {
@@ -28,7 +63,7 @@ export class MultiFormContainerComponent {
   }
 
   addForm() {
-    if (this.formArrayControls.length === this.maxForms) {
+    if (this.formArrayControls.length === this.maxForms || this.isFormSubmissionStarted) {
       return;
     }
 
@@ -36,6 +71,10 @@ export class MultiFormContainerComponent {
   }
 
   removeForm(index: number) {
+    if (this.isFormSubmissionStarted) {
+      return;
+    }
+
     this.formArray.removeAt(index);
   }
 
@@ -45,12 +84,62 @@ export class MultiFormContainerComponent {
         Validators.required,
         CountriesValidator(this.countries),
       ]),
-      username: new FormControl<string>(
-        '',
-        [Validators.required],
-        [UsernameValidator(this._formEditorService)],
-      ),
-      date: new FormControl<Date>(new Date(), [Validators.required]),
+      username: new FormControl<string>('', {
+        validators: [Validators.required],
+        asyncValidators: [UsernameAsyncValidator(this._formEditorService)],
+      }),
+      date: new FormControl<Date | null>(null, [Validators.required]),
     });
+  }
+
+  private _submissionEventHandler() {
+    this._submitSubscription = this._formSubmissionUtilsService.delayedEvent$
+      .pipe(
+        switchMap(() =>
+          this._formEditorService
+            .submitAllForms(this.formArray.getRawValue() as InfoModel[])
+            .pipe(take(1)),
+        ),
+        catchError((err) => {
+          this.isFormSubmissionStarted = false;
+
+          throw err;
+        }),
+      )
+      .subscribe(() => {
+        this.isFormSubmissionStarted = false;
+
+        this.formArray.enable();
+        this.formArray.reset([]);
+
+        // to update template when api responds
+        this._cd.markForCheck();
+      });
+  }
+
+  startSubmission() {
+    if (this.formArray.invalid) {
+      return;
+    }
+
+    this.formArray.disable();
+
+    this.isFormSubmissionStarted = true;
+
+    this._formSubmissionUtilsService.emitWithDelay(this.timerSec);
+  }
+
+  cancelSubmission() {
+    if (!this.isFormSubmissionStarted || !this._submitSubscription) {
+      return;
+    }
+
+    this.formArray.enable();
+
+    this.isFormSubmissionStarted = false;
+
+    this._submitSubscription?.unsubscribe();
+
+    this._submissionEventHandler();
   }
 }

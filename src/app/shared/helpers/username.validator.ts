@@ -1,23 +1,19 @@
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { catchError, debounceTime, map, Observable, of } from 'rxjs';
-import { FormEditorService } from '../../core/modules/form-editor/services/form-editor.service';
+import { catchError, debounceTime, map, Observable, of, switchMap, take } from 'rxjs';
+import { FormEditorService } from '../../core/modules/form-editor/services';
 
-export function UsernameValidator(formEditorService: FormEditorService): AsyncValidatorFn {
+export function UsernameAsyncValidator(formEditorService: FormEditorService): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
     if (!control.value) {
-      return of(null);
+      return of({ usernameError: true });
     }
 
-    return formEditorService.checkUser(control.value).pipe(
+    return of(control.value).pipe(
       debounceTime(300),
-      map((response) => {
-        return response.isAvailable ? null : { usernameError: true };
-      }),
-      catchError((error) => {
-        console.error(error);
-
-        throw error;
-      }),
+      switchMap((value) => formEditorService.checkUser(value).pipe(take(1))),
+      map((response) => (response.isAvailable ? null : { usernameError: true })),
+      catchError(() => of(null)),
+      take(1),
     );
   };
 }

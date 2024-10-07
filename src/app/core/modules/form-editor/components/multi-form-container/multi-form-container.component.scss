@@ -7,6 +7,12 @@
     min-height: 320px;
   }
 
+  .hover-card {
+    &:hover {
+      background-color: var(--bs-btn-hover-bg);
+    }
+  }
+
   .h-4 {
     height: 4rem;
   }
