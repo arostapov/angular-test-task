@@ -2,6 +2,8 @@
 
 Run `npm i` to install dependencies first, and then run `ng s` to start the app.
 
+Link to Github Pages: https://arostapov.github.io/angular-test-task/form-editor
+
 Short description of the app
 
 App has two pages:
