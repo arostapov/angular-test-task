@@ -19,10 +19,8 @@ import {
   map,
   Observable,
   shareReplay,
-  Subject,
   Subscription,
   switchMap,
-  takeUntil,
   takeWhile,
   tap,
 } from 'rxjs';
@@ -43,7 +41,6 @@ export class MatchingDropdownDirective implements OnInit, OnDestroy {
   private _customDropdownService: CustomDropdownService<MatchingListWrapperComponent> =
     inject(CustomDropdownService);
 
-  private _destroy$ = new Subject<void>();
   private _inputValue$ = new BehaviorSubject<string>('');
   private _showOn: Appearance = 'focus';
 
@@ -128,7 +125,6 @@ export class MatchingDropdownDirective implements OnInit, OnDestroy {
           (componentRef: ComponentRef<MatchingListWrapperComponent>) =>
             componentRef.instance.selectedItem$,
         ),
-        takeUntil(this._destroy$),
       )
       .subscribe((value: string) => {
         if (!value) {
@@ -157,7 +153,6 @@ export class MatchingDropdownDirective implements OnInit, OnDestroy {
             }),
           );
         }),
-        takeUntil(this._destroy$),
       )
       .subscribe();
   }
