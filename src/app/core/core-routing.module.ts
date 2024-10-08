@@ -13,6 +13,11 @@ const routes: Routes = [
           import('./modules/form-editor/form-editor.module').then((m) => m.FormEditorModule),
       },
       {
+        path: 'settings',
+        loadChildren: () =>
+          import('./modules/settings/settings.module').then((m) => m.SettingsModule),
+      },
+      {
         path: '**',
         redirectTo: 'form-editor',
       },

@@ -1,0 +1,28 @@
+<div *ngIf="settings$ | async as values; else loading">
+	<div class="pb-4" [formGroup]="form">
+		@for (key of settingsKeys(); track key) {
+			<div class="d-flex flex-column gap-1">
+				<span class="fs-6">{{ values[key].title }}</span>
+
+				@switch (values[key].controlType) {
+					@case ('input') {
+						<input class="border" type="text" customInput [formControlName]="key">
+					}
+					@case ('select') {
+						<select class="border rounded-2 px-1" [formControlName]="key">
+							@for (option of values[key].options; track option) {
+								<option [value]="option">{{ option }}</option>
+							}
+						</select>
+					}
+				}
+			</div>
+		}
+	</div>
+
+	<button type="button" class="btn btn-primary" [disabled]="submitting()" (click)="saveSettings()">Save</button>
+</div>
+
+<ng-template #loading>
+	Loading...
+</ng-template>

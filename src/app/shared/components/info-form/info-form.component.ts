@@ -11,7 +11,7 @@ import {
 import { CustomInputModule, MatchingDropdownModule } from '../../modules';
 import { CustomDateAdapter, CustomDateParserFormatter } from '../../helpers';
 import { InputValidatorDirective } from '../../directives';
-import { InfoForm, ShowOn } from '../../interface';
+import { Appearance, InfoForm } from '../../interface';
 
 @Component({
   selector: 'app-info-form',
@@ -33,7 +33,9 @@ import { InfoForm, ShowOn } from '../../interface';
 })
 export class InfoFormComponent {
   date = new Date();
-  showOn: ShowOn = 'input';
+
+  @Input()
+  showDropdownOn: Appearance = 'input';
 
   @Input()
   form?: FormGroup<InfoForm>;

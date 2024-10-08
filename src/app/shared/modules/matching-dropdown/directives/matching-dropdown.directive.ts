@@ -30,7 +30,7 @@ import {
 import { MatchingListWrapperComponent } from '../components';
 import { CustomDropdownService } from '../../../services';
 import { MATCHING_DATA, SEARCH_TERM } from '../constants';
-import { ShowOn } from '../../../interface';
+import { Appearance } from '../../../interface';
 
 @Directive({
   selector: 'input[matchingDropdown]',
@@ -45,7 +45,7 @@ export class MatchingDropdownDirective implements OnInit, OnDestroy {
 
   private _destroy$ = new Subject<void>();
   private _inputValue$ = new BehaviorSubject<string>('');
-  private _showOn: ShowOn = 'focus';
+  private _showOn: Appearance = 'focus';
 
   private _triggerSub?: Subscription;
   private _blurSub?: Subscription;
@@ -54,7 +54,7 @@ export class MatchingDropdownDirective implements OnInit, OnDestroy {
   dataset: string[] = [];
 
   @Input()
-  set showOn(value: ShowOn) {
+  set showOn(value: Appearance) {
     this._showOn = value;
 
     this._addEventListenerByType();
