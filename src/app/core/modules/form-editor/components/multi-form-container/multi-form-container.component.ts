@@ -5,6 +5,7 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  Signal,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, Observable, Subscription, switchMap, take } from 'rxjs';
@@ -12,8 +13,9 @@ import { catchError, Observable, Subscription, switchMap, take } from 'rxjs';
 import { InfoForm, InfoModel } from '../../../../../shared/interface';
 import { CountriesValidator, UsernameAsyncValidator } from '../../../../../shared/helpers';
 import { Country } from '../../../../../shared/enum/country';
-import { FormSubmissionUtilsService } from '../../../../../shared/services';
+import { FormSubmissionUtilsService, SettingsService } from '../../../../../shared/services';
 import { FormEditorService } from '../../services';
+import { MinifiedSettings } from '../../../../../shared/interface/settings';
 
 @Component({
   selector: 'app-multi-form',
@@ -25,17 +27,18 @@ import { FormEditorService } from '../../services';
 export class MultiFormContainerComponent implements OnInit, OnDestroy {
   private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _formEditorService: FormEditorService = inject(FormEditorService);
+  private _settingsService: SettingsService = inject(SettingsService);
   private _formSubmissionUtilsService: FormSubmissionUtilsService = inject(
     FormSubmissionUtilsService,
   );
   private _submitSubscription?: Subscription;
-
-  maxForms: number = 10;
-  timerSec: number = 15;
+  settings: Signal<MinifiedSettings> = this._settingsService.settingsMini;
 
   isFormSubmissionStarted: boolean = false;
   countries = Object.keys(Country);
-  timer$: Observable<string> = this._formSubmissionUtilsService.getTimerWatch(this.timerSec);
+  timer$: Observable<string> = this._formSubmissionUtilsService.getTimerWatch(
+    this.settings().formCancellableSeconds,
+  );
   formArray: FormArray<FormGroup<InfoForm>> = new FormArray([this._getNewFormGroup()]);
 
   get submitDisabled(): boolean {
@@ -64,7 +67,10 @@ export class MultiFormContainerComponent implements OnInit, OnDestroy {
   }
 
   addForm() {
-    if (this.formArrayControls.length === this.maxForms || this.isFormSubmissionStarted) {
+    if (
+      this.formArrayControls.length === this.settings().maxFormsCount ||
+      this.isFormSubmissionStarted
+    ) {
       return;
     }
 
@@ -127,7 +133,7 @@ export class MultiFormContainerComponent implements OnInit, OnDestroy {
 
     this.isFormSubmissionStarted = true;
 
-    this._formSubmissionUtilsService.emitWithDelay(this.timerSec);
+    this._formSubmissionUtilsService.emitWithDelay(this.settings().formCancellableSeconds);
   }
 
   cancelSubmission() {

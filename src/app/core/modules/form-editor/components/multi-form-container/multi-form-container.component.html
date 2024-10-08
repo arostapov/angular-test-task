@@ -1,31 +1,33 @@
-<div class="d-flex align-items-center mb-4 gap-2">
-	<button *ngIf="!isFormSubmissionStarted"
-					[disabled]="submitDisabled"
-	        type="button" class="btn btn-primary" (click)="startSubmission()">Submit all forms</button>
+<ng-container *ngIf="settings()">
+	<div class="d-flex align-items-center mb-4 gap-2">
+		<button *ngIf="!isFormSubmissionStarted"
+		        [disabled]="submitDisabled"
+		        type="button" class="btn btn-primary" (click)="startSubmission()">Submit all forms</button>
 
-	<button *ngIf="isFormSubmissionStarted"
-	        type="button" class="btn btn-danger" (click)="cancelSubmission()">Cancel</button>
+		<button *ngIf="isFormSubmissionStarted"
+		        type="button" class="btn btn-danger" (click)="cancelSubmission()">Cancel</button>
 
-	<div *ngIf="isFormSubmissionStarted">{{ timer$ | async }}</div>
+		<div *ngIf="isFormSubmissionStarted">{{ timer$ | async }}</div>
 
-	<div *ngIf="(formArray.dirty || formArray.touched) && (formArray | invalidFormsCount) as count"
-	      class="fs-6 text-danger">Invalid forms: {{ count }}</div>
-</div>
+		<div *ngIf="(formArray.dirty || formArray.touched) && (formArray | invalidFormsCount) as count"
+		     class="fs-6 text-danger">Invalid forms: {{ count }}</div>
+	</div>
 
-<div class="d-flex flex-wrap gap-2">
-	<app-card class="square-block"
-	          *ngFor="let form of formArrayControls; let idx = index; trackBy: formTrackBy">
-		<app-info-form [form]="form" [countries]="countries">
-			<div class="cursor-pointer user-select-none" formHeader (click)="removeForm(idx)">x</div>
-		</app-info-form>
-	</app-card>
+	<div class="d-flex flex-wrap gap-2">
+		<app-card class="square-block"
+		          *ngFor="let form of formArrayControls; let idx = index; trackBy: formTrackBy">
+			<app-info-form [form]="form" [countries]="countries" [showDropdownOn]="settings().dropdownAppearance">
+				<div class="cursor-pointer user-select-none" formHeader (click)="removeForm(idx)">x</div>
+			</app-info-form>
+		</app-card>
 
-	<app-card *ngIf="formArrayControls.length < maxForms"
-	          class="square-block align-self-stretch hover-card"
-	          [ngClass]="[isFormSubmissionStarted ? 'cursor-wait' : 'cursor-pointer']"
-	          (click)="addForm()">
-		<div class="d-flex align-items-center justify-content-center w-100 h-100">
-			<div class="fs-1 border square-block h-4 rounded-circle lh-1 d-flex align-items-center justify-content-center user-select-none">+</div>
-		</div>
-	</app-card>
-</div>
+		<app-card *ngIf="formArrayControls.length < settings().maxFormsCount"
+		          class="square-block align-self-stretch hover-card"
+		          [ngClass]="[isFormSubmissionStarted ? 'cursor-wait' : 'cursor-pointer']"
+		          (click)="addForm()">
+			<div class="d-flex align-items-center justify-content-center w-100 h-100">
+				<div class="fs-1 border square-block h-4 rounded-circle lh-1 d-flex align-items-center justify-content-center user-select-none">+</div>
+			</div>
+		</app-card>
+	</div>
+</ng-container>
