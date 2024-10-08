@@ -1,0 +1,24 @@
+input.custom-input {
+  border: 1px solid darkgrey;
+  border-radius: .5rem;
+  padding: 0 .5rem;
+
+  &.small {
+    height: 1.5rem;
+  }
+
+  &.medium {
+    height: 2rem;
+  }
+
+  &.large {
+    height: 2.5rem;
+  }
+
+  &.ng-invalid {
+    &.ng-dirty, &.ng-touched {
+      border-color: red !important;
+      outline-color: red !important;
+    }
+  }
+}
